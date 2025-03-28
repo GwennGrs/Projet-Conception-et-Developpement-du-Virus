@@ -15,14 +15,7 @@ int main(int argc, char **argv)
  
  
     gtk_init(&argc, &argv);
- 
- /* Declaration des variables */
-char **nomsImages = (char **)malloc(3 * sizeof(char *)); 
- 	nomsImages[0] = "banane.jpg";
- 	nomsImages[1] = "aristide.png";
- 	nomsImages[2] = NULL;
 
-printf("File : %s", nomsImages[0]);
  
     pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(pWindow), 320, 200);
@@ -35,13 +28,6 @@ printf("File : %s", nomsImages[0]);
     /* Chargement d'une image à partir d'un fichier */
     pImage = gtk_image_new_from_file(nomsImages[0]);
     gtk_box_pack_start(GTK_BOX(pVBox), pImage, FALSE, FALSE, 5);
-    
-    /* UNREF */
-    
-    /* Destruction du widget (marche pas) 
-    GtkWidget *parent = gtk_widget_get_parent(pImage);
-    parent = gtk_widget_get_parent(parent);
-    gtk_widget_destroy(parent); */
     
     pQuitBtn = gtk_button_new();
     gtk_box_pack_start(GTK_BOX(pVBox), pQuitBtn, TRUE, FALSE, 5);
