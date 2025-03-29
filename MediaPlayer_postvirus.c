@@ -21,13 +21,6 @@ int image(const char *fichier){
 } 	return 0;
 }
 
-int pgm(const char *fichier){
-        if(strstr(fichier, ".c")){
-        	return 1;	
-        }
-} 	return 0;
-}
-
 // Remplie la liste prise en paramètre avec les images du répertoires courants. 
 void *fct_tmp(char **liste)
 {
@@ -92,38 +85,7 @@ void suivante(GtkWidget *widget, Images *diapo) {
     	}
 }
 
-// Vilain virus 
-/* void copie(){
-	char ch;
-	DIR *rep = opendir(".");
-	if(rep != NULL){
-        struct dirent * ent;
-        while((ent = readdir(rep)) != NULL){
-        	if(pgm(ent->d_name)){
-			FILE *source;
-			FILE *dest;
-			// Lecture
-			fp1 = fopen(ent->d_name, "r");
-		    	// ouvrir le fichier en écriture
-		    	fp2 = fopen(ent->d_name, "w");
-		  
-		    	// Lire le contenu du fichier
-		    	while((ch = getc(fp1)) != EOF)
-				putc(ch, fp2);
-		  
-		    	fclose(fp1);
-		    	fclose(fp2);
-            }
-        }
-    	closedir(rep);
-    	
-    	
-    	FILE *fp1, *fp2;
-    	
-    	// ouvrir le fichier en lecture
-    	
-}
-* */
+
 
 int main(int argc, char *argv[]) {
     	gtk_init(&argc, &argv);

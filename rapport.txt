@@ -1,0 +1,8 @@
+GtkWidget*
+gtk_image_new (
+  void
+)
+
+Créer un widget image.
+
+Je met un max de 20 images, pour des soucis d'allocation mémoire.
