@@ -3,5 +3,5 @@
 
 int main(void)
 {
-    printf("Je suis pg1");
+    printf("Je suis pg2");
 }

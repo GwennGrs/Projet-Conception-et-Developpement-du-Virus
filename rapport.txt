@@ -6,3 +6,7 @@ gtk_image_new (
 Créer un widget image.
 
 Je met un max de 20 images, pour des soucis d'allocation mémoire.
+
+
+
+Lors de la dupplication j'ai eu un soucis qu'était que si je lancer pg1, après copie du virus, il se copier un pg1.old avec son propre code (le code infecté).

